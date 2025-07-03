@@ -1,9 +1,5 @@
 # Proyecto Taxímetro en Python
 
-# This is a basic application that simulates a taximetro digital
-
-# Taxímetro en Python
-
 ## Descripción
 
 Esta es una aplicación básica de primera aproximación al lenguaje python que simula un taxímetro. Permite calcular las tarifas de un trayecto basándose en el tiempo que el taxi está parado o en movimiento.  
