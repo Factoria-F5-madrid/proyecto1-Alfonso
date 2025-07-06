@@ -1,6 +1,20 @@
+# Taxímetro Digital de F5
+# Este programa simula un taxímetro digital que calcula tarifas basadas en el tiempo de trayecto
+# y el estado del taxi (en movimiento o parado).
+# Autor: Alfonso Bermúdez
+
+# import time para manejar el tiempo de trayecto
 import time
 
+# import os para manejar el sistema de archivos (logs)
+import os
+
+# import logging para manejar el registro de eventos (logs)
 import logging
+
+# Crear el directorio de logs si no existe
+if not os.path.exists('logs'):
+    os.makedirs('logs')
 
 
 # Configuración del logging a archivo
@@ -19,14 +33,17 @@ ERROR	Entrada errónea o excepción controlada
 CRITICAL	Error inesperado grave (ej: interrupción o fallo total del programa)
 """
 
+#
 def calcular_tarifa(duracion, en_movimiento):
     """
     Calcula la tarifa según la duración y si el taxi está en movimiento o parado.
     """
+    # Validación de la duración, asegurando que sea un número positivo
     if duracion < 0:
         logging.error("Duración negativa detectada.")
         return 0.0
 
+    # Determinar la tarifa por segundo cuando el taxi está en movimiento o parado
     if en_movimiento:
         tarifa_por_segundo = 0.05
         estado = "movimiento"
@@ -34,13 +51,13 @@ def calcular_tarifa(duracion, en_movimiento):
         tarifa_por_segundo = 0.02
         estado = "parado"
 
- 
+    # Calcular la tarifa 
     logging.debug(f"Duración: {duracion:.2f} s en {estado}. Tarifa parcial: {duracion * tarifa_por_segundo:.2f} €")
     return duracion * tarifa_por_segundo
 
 
 
-
+# función de bienvenida que muestra un mensaje inicial y las instrucciones
 def bienvenida():
     """
     Muestra un mensaje de bienvenida e instrucciones.
@@ -50,11 +67,13 @@ def bienvenida():
     print("Instrucciones:")
     print(" - Escribe 'start' para iniciar un trayecto")
     print(" - Escribe 'stop' para finalizar el trayecto")
-    print(" - Durante el trayecto, introduce 'M' (movimiento) o 'P' (parado)")
+    print(" - Durante el trayecto, introduce 'M/m' (movimiento) o 'P/p' (parado)")
     print(" - Tarifa: 0.05 €/seg en movimiento, 0.02 €/seg parado")
     print(" - Escribe 'exit' para salir del programa")
     print("-" * 40)
 
+
+# función que inicia el trayecto, gestiona el tiempo y la tarifa
 def iniciar_trayecto():
     """
     Gestiona el trayecto: tiempo, tarifa e interacción con el usuario.
@@ -62,25 +81,42 @@ def iniciar_trayecto():
     tarifa_total = 0.0
     print("\nTrayecto iniciado. Escribe 'stop' para finalizar.\n")
     logging.info("Trayecto iniciado.")
-    # Estado inicial del taxi
-
-
+    
+    '''# Estado inicial del taxi
     estado_inicial = input("¿Está el taxi en movimiento? (s/n): ").lower()
     if estado_inicial not in ['s', 'n']:
         print("Entrada no válida. Usa 's' o 'n'.")
         logging.error(f"Estado inicial no válido: {estado_inicial}")
         return
+    '''
+    # Bucle para validar correctamente la entrada
+    while True:
+        estado_inicial = input("¿Está el taxi en movimiento? (s/n): ").lower()
+        if estado_inicial in ['s', 'n']:
+            break
+        else:
+            print("Entrada no válida. Usa 's' o 'n'.")
+            logging.warning(f"Estado inicial no válido: {estado_inicial}")
 
+
+    # Convertir el estado inicial a booleano 's' para en movimiento
     en_movimiento = estado_inicial == 's'
     tiempo_anterior = time.time()
 
+    # Mensaje inicial según el estado del taxi
+    # Mientras se cumpla condición 
     while True:
-        comando = input("Introduce estado ('M' (movimiento) o 'P' (parado)) o 'stop': ").lower()
+        comando = input("Introduce estado ('M/m' (movimiento) o 'P/p' (parado)) o 'stop': ").lower()
         tiempo_actual = time.time()
+
+        # Calcular la duración del trayecto
         duracion = tiempo_actual - tiempo_anterior
+
+        # Calcular la tarifa total con la tarifa acumulada
         tarifa_total += calcular_tarifa(duracion, en_movimiento)
         tiempo_anterior = tiempo_actual
 
+        
         if comando == 'stop':
             print(f"\nTrayecto finalizado. Tarifa total: {tarifa_total:.2f} €\n")
             logging.info(f"Trayecto finalizado. Tarifa total: {tarifa_total:.2f} €")
@@ -94,7 +130,7 @@ def iniciar_trayecto():
             print(f"Taxi parado. Tarifa acumulada: {tarifa_total:.2f} €")
             logging.info(f"Estado cambiado a parado. Tarifa: {tarifa_total:.2f} €")
         else:
-            print("Entrada no válida. Usa 'M', 'P' o 'stop'.")
+            print("Entrada no válida. Usa 'M/m', 'P/p' o 'stop'.")
             logging.warning(f"Comando no reconocido: {comando}")
 
 def ejecutar_taximetro():
@@ -118,4 +154,5 @@ def ejecutar_taximetro():
             print("\nPrograma interrumpido por el usuario.")
             logging.critical("Programa interrumpido por el usuario.")
             break
+
 
