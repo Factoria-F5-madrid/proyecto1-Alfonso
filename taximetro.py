@@ -1,6 +1,20 @@
+# Taxímetro Digital de F5
+# Este programa simula un taxímetro digital que calcula tarifas basadas en el tiempo de trayecto
+# y el estado del taxi (en movimiento o parado).
+# Autor: Alfonso Bermúdez
+
+# import time para manejar el tiempo de trayecto
 import time
 
+# import os para manejar el sistema de archivos (logs)
+import os
+
+# import logging para manejar el registro de eventos (logs)
 import logging
+
+# Crear el directorio de logs si no existe
+if not os.path.exists('logs'):
+    os.makedirs('logs')
 
 
 # Configuración del logging a archivo
@@ -75,7 +89,7 @@ def iniciar_trayecto():
     tiempo_anterior = time.time()
 
     while True:
-        comando = input("Introduce estado ('M' (movimiento) o 'P' (parado)) o 'stop': ").lower()
+        comando = input("Introduce estado ('M/m' (movimiento) o 'P/p' (parado)) o 'stop': ").lower()
         tiempo_actual = time.time()
         duracion = tiempo_actual - tiempo_anterior
         tarifa_total += calcular_tarifa(duracion, en_movimiento)
