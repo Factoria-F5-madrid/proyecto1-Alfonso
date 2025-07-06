@@ -1,4 +1,4 @@
-![Banner del proyecto](assets/banner.png)
+![Banner del proyecto](assets/F5-banner-taximetro.png)
 
 #  Proyecto Taxímetro Digital
 
