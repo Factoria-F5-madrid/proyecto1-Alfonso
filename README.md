@@ -1,51 +1,70 @@
+
 # 🚕 Proyecto Taxímetro Digital
 
-Este es un proyecto básico de una aplicación en Python que **simula el funcionamiento de un taxímetro** a través de la línea de comandos (CLI).  
-Forma parte de un ejercicio práctico con los siguientes **objetivos principales**:
+Aplicación desarrollada en Python que **simula el funcionamiento de un taxímetro** desde la línea de comandos (CLI).  
+Este proyecto forma parte de un proceso de aprendizaje con los siguientes **objetivos**:
 
 ---
 
 ## 🎯 Objetivos del proyecto
 
-- Iniciarse en la programación de una aplicación funcional en **Python**.
-- Practicar la estructura y modularización de código.
-- Familiarizarse con el uso de **Git** y **GitHub** desde el inicio del desarrollo.
-- Adoptar buenas prácticas de control de versiones, incluyendo:
-  - Uso de ramas (opcionalmente)
-  - Convenciones para mensajes de `commit` (como `feat:`, `fix:`, `docs:`, `refactor:`)
+- Iniciarse en la programación funcional en **Python**
+- Practicar el diseño modular y separación de lógica en módulos
+- Familiarizarse con el uso de **Git** y **GitHub**
+- Usar herramientas de control de versiones de forma profesional:
+  - Uso de ramas (`main`, `dev`, `test`)
+  - Uso de *issues*, *pull requests* y tablero **Kanban**
+  - Uso de templates para issues y PRs
+  - Estandarización de commits (`feat:`, `fix:`, `docs:`, etc.)
 
 ---
 
-## 🧩 Descripción del funcionamiento
+## 🧩 Funcionamiento del programa
 
-El programa permite:
+El usuario puede:
 
-1. Mostrar un mensaje de bienvenida.
-2. Iniciar un trayecto simulando un taxi en movimiento o parado.
-3. Calcular el coste del trayecto:
-   - 📍 Parado: 0,02 € por segundo
-   - 🛣️ En movimiento: 0,05 € por segundo
-4. Cambiar entre estados durante el trayecto (`M` = movimiento, `P` = parado).
-5. Finalizar el trayecto y mostrar la tarifa total.
+1. Iniciar un trayecto (`start`)
+2. Indicar si el taxi está en movimiento o parado (`M` o `P`)
+3. Cambiar entre estados durante el trayecto
+4. Finalizar trayecto (`stop`)
+5. Consultar el precio acumulado
+6. Guardar automáticamente cada trayecto en un historial (`historial_trayectos/historial.txt`)
 
-Toda la lógica del negocio está encapsulada en el archivo `taximetro.py`, mientras que `main.py` sirve únicamente como punto de entrada.
+### 💰 Tarifas
+
+- 🚗 Movimiento: `0,05 €` por segundo  
+- ⛔ Parado: `0,02 €` por segundo  
 
 ---
 
 ## 📁 Estructura del proyecto
 
-```
-proyecto1-Alfonso/
-├── main.py              # Punto de entrada, ejecuta el taxímetro
-├── taximetro.py         # Lógica principal de la aplicación
-└── README.md            # Este archivo de documentación
+```bash
+taximetro-digital/
+├── main.py                          # Punto de entrada principal
+├── taximetro.py                     # Lógica de negocio del taxímetro
+├── logs/
+│   └── taximetro.log                # Registro de eventos y errores
+├── historial_trayectos/
+│   └── historial.txt                # Registro de trayectos pasados
+├── tests/
+│   ├── __init__.py
+│   └── test_simulador.py           # Tests unitarios
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── feature_request.yml
+│   │   └── style_request.yml
+│   └── PULL_REQUEST_TEMPLATE.md    # Plantilla de Pull Requests
+├── .gitignore
+├── .gitattributes
+└── README.md
 ```
 
 ---
 
-## 🚀 Ejecución
+## 🚀 Cómo ejecutar la aplicación
 
-Desde tu terminal, ejecuta:
+Desde la terminal, ejecuta:
 
 ```bash
 python main.py
@@ -55,31 +74,67 @@ python main.py
 
 ## ✅ Ejemplo de uso
 
-```
+```bash
+Bienvenido al Taxímetro Digital de F5
+----------------------------------------
 Comando (start/exit): start
 ¿Está el taxi en movimiento? (s/n): s
-Introduce estado (M/P) o 'stop': m
-Taxi en movimiento. Tarifa acumulada: 0.25 €
-Introduce estado (M/P) o 'stop': p
-Taxi parado. Tarifa acumulada: 0.34 €
-Introduce estado (M/P) o 'stop': stop
-Trayecto finalizado. Tarifa total: 0.41 €
+Introduce estado ('M' o 'P') o 'stop': m
+Taxi en movimiento. Tarifa acumulada: 0.10 €
+Introduce estado ('M' o 'P') o 'stop': p
+Taxi parado. Tarifa acumulada: 0.16 €
+Introduce estado ('M' o 'P') o 'stop': stop
+Trayecto finalizado. Tarifa total: 0.24 €
 ```
 
 ---
 
-## 📌 Buenas prácticas Git utilizadas
+## 🧪 Ejecución de tests
 
-- `feat:` para nuevas funcionalidades
-- `fix:` para correcciones de errores
-- `docs:` para documentación
-- `refactor:` para reorganización de código
-- Commits realizados de forma incremental y con sentido
+Los tests se ejecutan con `unittest` y validan el comportamiento de funciones clave como `calcular_tarifa`.
+
+Desde la raíz del proyecto, ejecuta:
+
+```bash
+python -m unittest tests.test_simulador.py
+```
+
+O con el lanzador simplificado:
+
+```bash
+python run_tests.py
+```
+
+La salida del test es clara, con mensajes amigables que indican qué se está probando.
+
+---
+
+## 📌 Buenas prácticas usadas
+
+- ✔️ Uso de `logging` para registrar actividad
+- ✔️ Historial de trayectos guardado automáticamente
+- ✔️ `.gitignore` configurado para evitar subir archivos temporales
+- ✔️ Commit messages semánticos: `feat:`, `fix:`, `docs:`, `refactor:`
+- ✔️ Separación clara de lógica y pruebas
+- ✔️ Plantillas para Issues y Pull Requests
+
+---
+
+## 📋 Gestión del proyecto
+
+Proyecto organizado en tablero **Kanban** dentro de GitHub con las columnas:
+
+- Backlog
+- Ready
+- In progress
+- In review
+- Done
+
+🔗 [Ver tablero Kanban del proyecto](https://github.com/orgs/Factoria-F5-madrid/projects/13/views/1)
 
 ---
 
 ## ✍️ Autor
 
-Desarrollado por **Alfonso** como parte del proyecto de aprendizaje en **Factoria F5 Madrid**.
-
-
+Proyecto desarrollado por **Alfonso**  
+Como parte del programa de formación de **Factoria F5 - Madrid**
