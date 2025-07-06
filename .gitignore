@@ -1,1 +1,11 @@
+# Carpetas de cache
 __pycache__/
+
+
+# Ignorar archivos de log
+taximetro.log
+
+# Entornos virtuales
+venv/
+
+
