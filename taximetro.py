@@ -16,12 +16,23 @@ import logging
 if not os.path.exists('logs'):
     os.makedirs('logs')
 
+# Crear el directorio de historial_trayectos si no existe
+# Nota: historial_trayectos se usa para almacenar los detalles de los trayectos
+if not os.path.exists('historial_trayectos'):
+    os.makedirs('historial_trayectos')
+
+
+# import datetime para manejar fechas y horas
+# Nota: datetime se usa para registrar la fecha y hora de los trayectos en el historial
+from datetime import datetime
+
+
 
 # Configuración del logging a archivo
 logging.basicConfig(
     level=logging.DEBUG,  # Mostrar todos los niveles desde DEBUG en adelante
     format='%(asctime)s - %(levelname)s - %(message)s',  # Formato del mensaje de lo
-    filename='taximetro.log', # Archivo donde se almacenan los logs
+    filename='logs/taximetro.log', # Archivo donde se almacenan los logs
     filemode='a' # Modo de apertura del archivo (a: append, w: write)
 )
 
@@ -79,6 +90,8 @@ def iniciar_trayecto():
     Gestiona el trayecto: tiempo, tarifa e interacción con el usuario.
     """
     tarifa_total = 0.0
+    duracion_total_mov = 0.0
+    duracion_total_parado = 0.0
     print("\nTrayecto iniciado. Escribe 'stop' para finalizar.\n")
     logging.info("Trayecto iniciado.")
     
@@ -90,6 +103,8 @@ def iniciar_trayecto():
         return
     '''
     # Bucle para validar correctamente la entrada
+    # Mensaje inicial según el estado del taxi
+    # Mientras se cumpla condición
     while True:
         estado_inicial = input("¿Está el taxi en movimiento? (s/n): ").lower()
         if estado_inicial in ['s', 'n']:
@@ -114,12 +129,19 @@ def iniciar_trayecto():
 
         # Calcular la tarifa total con la tarifa acumulada
         tarifa_total += calcular_tarifa(duracion, en_movimiento)
+        
+        if en_movimiento:
+            duracion_total_mov += duracion
+        else:
+            duracion_total_parado += duracion
+
         tiempo_anterior = tiempo_actual
 
         
         if comando == 'stop':
             print(f"\nTrayecto finalizado. Tarifa total: {tarifa_total:.2f} €\n")
             logging.info(f"Trayecto finalizado. Tarifa total: {tarifa_total:.2f} €")
+            guardar_en_historial(tarifa_total, duracion_total_mov, duracion_total_parado)
             break
         elif comando == 'm':
             en_movimiento = True
@@ -132,6 +154,7 @@ def iniciar_trayecto():
         else:
             print("Entrada no válida. Usa 'M/m', 'P/p' o 'stop'.")
             logging.warning(f"Comando no reconocido: {comando}")
+
 
 def ejecutar_taximetro():
     """
@@ -155,4 +178,18 @@ def ejecutar_taximetro():
             logging.critical("Programa interrumpido por el usuario.")
             break
 
+def guardar_en_historial(tarifa_total, duracion_movimiento, duracion_parado):
+    """
+    Guarda los detalles del trayecto en un archivo historial.txt
+    """
+    try:
+        with open("historial_trayectos/historial.txt", "a", encoding="utf-8") as file:
+            file.write("=== Nuevo trayecto ===\n")
+            file.write(f"Fecha y hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            file.write(f"Tiempo en movimiento: {duracion_movimiento:.2f} s\n")
+            file.write(f"Tiempo parado: {duracion_parado:.2f} s\n")
+            file.write(f"Tarifa total: {tarifa_total:.2f} €\n\n")
+        logging.info("Trayecto guardado en historial.txt")
+    except Exception as e:
+        logging.error(f"No se pudo guardar el trayecto en el historial: {e}")
 
