@@ -1,5 +1,6 @@
 # Carpetas de cache
 __pycache__/
+tests/__pycache__/
 
 
 # Ignorar archivos temporales log, historial
